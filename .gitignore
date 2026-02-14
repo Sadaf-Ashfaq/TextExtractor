@@ -40,3 +40,6 @@ staticfiles/
 
 # EasyOCR cache
 .EasyOCR/
+
+.env
+*.env
