@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="text-center mb-5">
+            <i class="fas fa-cloud-upload-alt fa-4x mb-3" style="color: #1e3c72;"></i>
+            <h2 class="fw-bold">Upload Handwritten Note</h2>
+            <p class="text-muted">Upload an image and let AI extract the text for you</p>
+        </div>
+        
+        {% if error %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <div class="alert alert-warning border-0 mb-4" style="background-color: #fff3cd;">
+            <h6 class="fw-bold mb-2">
+                <i class="fas fa-info-circle me-2"></i> Important: OCR Accuracy Information
+            </h6>
+            <p class="mb-2">Our AI works best with:</p>
+            <ul class="mb-2">
+                <li><strong>Printed text</strong> - Books, documents, screenshots (95%+ accuracy)</li>
+                <li><strong>Clear handwriting</strong> - Block letters, good lighting (60-80% accuracy)</li>
+                <li><strong>Digital text images</strong> - Computer-generated text (99% accuracy)</li>
+            </ul>
+            <p class="mb-0 text-muted small">
+                <i class="fas fa-lightbulb me-1"></i> 
+                Don't worry if extraction isn't perfect - you'll be able to edit the text manually after upload!
+            </p>
+        </div>
+        
+        <div class="card shadow-lg border-0 p-5">
+            <form method="post" enctype="multipart/form-data" id="uploadForm">
+                {% csrf_token %}
+                
+                <div class="mb-4">
+                    <label class="form-label fw-semibold fs-5">
+                        <i class="fas fa-heading me-2"></i> Note Title
+                    </label>
+                    <input type="text" name="title" class="form-control form-control-lg" placeholder="e.g., Math Class Notes" required>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label fw-semibold fs-5">
+                        <i class="fas fa-image me-2"></i> Upload Image
+                    </label>
+                    <input type="file" name="image" class="form-control form-control-lg" accept="image/*" required id="imageInput">
+                    <small class="text-muted">Supported: JPG, PNG, JPEG | Max size: 10MB</small>
+                </div>
+                
+                <div id="imagePreview" class="mb-4 text-center" style="display: none;">
+                    <img id="preview" src="" class="img-fluid rounded shadow" style="max-height: 400px;">
+                </div>
+                
+                <button type="submit" class="btn btn-primary btn-lg w-100 py-3" id="submitBtn">
+                    <i class="fas fa-magic me-2"></i> Extract Text
+                </button>
+                
+                <div id="loading" style="display: none;" class="text-center mt-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Processing image... This may take 10-30 seconds</p>
+                </div>
+            </form>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                <i class="fas fa-info-circle me-1"></i> 
+                Don't worry if text isn't perfect - you can edit it after extraction!
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 12px;
+        padding: 15px;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 0.3rem rgba(30, 60, 114, 0.25);
+    }
+</style>
+
+<script>
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Check file size (10MB limit)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File too large! Please use an image under 10MB.');
+                this.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+
+    document.getElementById('uploadForm').addEventListener('submit', function() {
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('loading').style.display = 'block';
+    });
+</script>
+{% endblock %}

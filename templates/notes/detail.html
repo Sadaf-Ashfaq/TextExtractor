@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold mb-1" style="color: #1e3c72;">
+                    <i class="fas fa-file-alt me-2"></i>{{ note.title }}
+                </h2>
+                <small class="text-muted">
+                    <i class="fas fa-calendar me-1"></i> {{ note.created_at|date:"F d, Y - h:i A" }}
+                </small>
+            </div>
+            <div>
+                <a href="{% url 'notes_list' %}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Notes
+                </a>
+                <a href="{% url 'note_edit' note.pk %}" class="btn btn-primary">
+                    <i class="fas fa-edit me-2"></i> Edit Text
+                </a>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-image me-2"></i> Original Image</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="{{ note.original_image.url }}" class="img-fluid rounded" style="max-height: 500px;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header" style="background: #1e3c72; color: white;">
+                        <h5 class="mb-0"><i class="fas fa-font me-2"></i> Extracted Text</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="bg-light p-4 rounded" style="min-height: 400px; max-height: 500px; overflow-y: auto;">
+                            <pre style="white-space: pre-wrap; font-family: 'Segoe UI'; font-size: 15px;">{{ note.extracted_text }}</pre>
+                        </div>
+                        
+                        <div class="mt-3 d-flex gap-2">
+                            <button class="btn btn-success flex-fill" onclick="copyText()">
+                                <i class="fas fa-copy me-2"></i> Copy Text
+                            </button>
+                            <button class="btn btn-info flex-fill" onclick="downloadText()">
+                                <i class="fas fa-download me-2"></i> Download TXT
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Summary Section -->
+        {% if note.summary %}
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card shadow-sm">
+                    <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                        <h5 class="mb-0">
+                            <i class="fas fa-robot me-2"></i> AI Generated Summary
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="lead">{{ note.summary }}</p>
+                        
+                        {% if note.keywords %}
+                        <hr>
+                        <div>
+                            <h6 class="fw-bold mb-2">
+                                <i class="fas fa-tags me-2"></i> Keywords:
+                            </h6>
+                            {% for keyword in keywords_list %}
+                                <span class="badge bg-primary me-2 mb-2">{{ keyword.strip }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    function copyText() {
+        const text = `{{ note.extracted_text|escapejs }}`;
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Text copied to clipboard!');
+        });
+    }
+
+    function downloadText() {
+        const text = `{{ note.extracted_text|escapejs }}`;
+        const blob = new Blob([text], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '{{ note.title }}.txt';
+        a.click();
+    }
+</script>
+{% endblock %}

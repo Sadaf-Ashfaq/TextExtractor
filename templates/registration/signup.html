@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="text-center mb-4">
+            <div class="mb-4">
+                <i class="fas fa-user-plus fa-3x" style="color: #1e3c72;"></i>
+            </div>
+            <h2 class="fw-bold mb-2">Create Account</h2>
+            <p class="text-muted">Join NoteScan AI today - it's free!</p>
+        </div>
+        
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="mb-4">
+                <label class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="fas fa-user text-muted"></i>
+                    </span>
+                    {{ form.username }}
+                </div>
+                {% if form.username.errors %}
+                    <small class="text-danger">{{ form.username.errors.0 }}</small>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="fas fa-lock text-muted"></i>
+                    </span>
+                    {{ form.password1 }}
+                </div>
+                {% if form.password1.errors %}
+                    <small class="text-danger">{{ form.password1.errors.0 }}</small>
+                {% endif %}
+            </div>
+            
+            <div class="mb-4">
+                <label class="form-label">Confirm Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="fas fa-lock text-muted"></i>
+                    </span>
+                    {{ form.password2 }}
+                </div>
+                {% if form.password2.errors %}
+                    <small class="text-danger">{{ form.password2.errors.0 }}</small>
+                {% endif %}
+            </div>
+            
+            <div class="alert alert-info border-0" style="background-color: #e3f2fd;">
+                <small>
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Password Requirements:</strong><br>
+                    • At least 8 characters long<br>
+                    • Mix of letters and numbers recommended
+                </small>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100 py-3 mb-3">
+                <i class="fas fa-user-plus me-2"></i> Create Account
+            </button>
+            
+            <div class="text-center">
+                <p class="text-muted mb-0">
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="fw-bold text-decoration-none" style="color: #1e3c72;">Login</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+    
+    .input-group {
+        width: 100%;
+    }
+    
+    .input-group-text {
+        border: 2px solid #e0e0e0;
+        border-right: none;
+        border-radius: 8px 0 0 8px !important;
+        height: 50px !important;
+        display: flex;
+        align-items: center;
+        padding: 0 15px;
+    }
+    
+    .form-control, input[type="text"], input[type="password"] {
+        width: 100% !important;
+        flex: 1 !important;
+        border: 2px solid #e0e0e0 !important;
+        border-left: none !important;
+        padding: 15px !important;
+        font-size: 16px !important;
+        height: 50px !important;
+        border-radius: 0 8px 8px 0 !important;
+    }
+    
+    .form-control:focus, input:focus {
+        border-color: #1e3c72 !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+    
+    .input-group:focus-within .input-group-text {
+        border-color: #1e3c72;
+    }
+    
+    .input-group:focus-within .form-control,
+    .input-group:focus-within input {
+        border-color: #1e3c72 !important;
+    }
+    
+    .btn-primary {
+        height: 55px !important;
+        font-size: 16px !important;
+    }
+    
+    #hint_id_username, #hint_id_password1, #hint_id_password2 {
+        display: none !important;
+    }
+</style>
+{% endblock %}

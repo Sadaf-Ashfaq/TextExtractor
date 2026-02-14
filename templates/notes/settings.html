@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="text-center mb-4">
+            <i class="fas fa-cog fa-3x mb-3" style="color: #1e3c72;"></i>
+            <h2 class="fw-bold">Account Settings</h2>
+            <p class="text-muted">Update your profile information</p>
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Profile Picture -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-camera me-2"></i> Profile Picture
+                    </h5>
+                    
+                    <div class="text-center mb-3">
+                        {% if profile.profile_picture %}
+                            <img src="{{ profile.profile_picture.url }}" id="preview" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #1e3c72;">
+                        {% else %}
+                            <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" id="avatar" style="width: 150px; height: 150px; background: linear-gradient(135deg, #1e3c72, #2a5298); color: white; font-size: 4rem;">
+                                {{ user.username.0|upper }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <input type="file" name="profile_picture" class="form-control" accept="image/*" id="imageInput">
+                </div>
+            </div>
+
+            <!-- Personal Info -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fas fa-user me-2"></i> Personal Information
+                    </h5>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">First Name</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ user.first_name }}" placeholder="Enter first name">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-semibold">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ user.last_name }}" placeholder="Enter last name">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        <input type="email" name="email" class="form-control" value="{{ user.email }}" placeholder="Enter email">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Phone</label>
+                        <input type="text" name="phone" class="form-control" value="{{ profile.phone }}" placeholder="Enter phone number">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Location</label>
+                        <input type="text" name="location" class="form-control" value="{{ profile.location }}" placeholder="City, Country">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Bio</label>
+                        <textarea name="bio" class="form-control" rows="3" placeholder="Tell us about yourself...">{{ profile.bio }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-lg flex-fill">
+                    <i class="fas fa-save me-2"></i> Save Changes
+                </button>
+                <a href="{% url 'user_profile' %}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-times me-2"></i> Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .form-control {
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        padding: 12px;
+    }
+    .form-control:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 0.2rem rgba(30, 60, 114, 0.25);
+    }
+</style>
+
+<script>
+    document.getElementById('imageInput').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const preview = document.getElementById('preview');
+                const avatar = document.getElementById('avatar');
+                
+                if (preview) {
+                    preview.src = e.target.result;
+                } else if (avatar) {
+                    avatar.outerHTML = `<img src="${e.target.result}" id="preview" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #1e3c72;">`;
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+# Python
+*.pyc
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# Django
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Media files (uploaded images)
+media/
+
+# Static files
+staticfiles/
+/static/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Environment variables
+.env
+*.env
+
+# Tesseract
+*.traineddata
+
+# EasyOCR cache
+.EasyOCR/
